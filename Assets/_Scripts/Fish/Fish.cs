@@ -1,12 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Fish : MonoBehaviour
 {
-    [SerializeField] private float speed = 4f;
+    [SerializeField] protected float speed = 4f;
+    [SerializeField] protected int score = 10;
+    [SerializeField] protected Color fishColor = Color.white;
+    [SerializeField] protected string fishType = "";
+    
     private Vector3 _moveVector = Vector3.zero;
     
     // Start is called before the first frame update
@@ -68,6 +73,7 @@ public class Fish : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
+            GameManager.Instance.AddScore(fishColor, score, fishType);
             Destroy(this.gameObject);
         }
     }

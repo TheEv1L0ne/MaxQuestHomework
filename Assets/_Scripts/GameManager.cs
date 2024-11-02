@@ -16,12 +16,16 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Toggle autoFireToggle;
 
+    public int playerScore = 0;
+
     public bool IsAutoOn => autoFireToggle.isOn;
 
     [SerializeField] private GameObject fish;
     [SerializeField] private Fish commonFish;
     [SerializeField] private Fish rareFish;
     [SerializeField] private Fish epicFish;
+
+    [SerializeField] private SelfScore selfScore;
 
     private void Awake()
     {
@@ -39,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        playerScore = 0;
         StartCoroutine(SpawnFish());
     }
 
@@ -73,7 +78,6 @@ public class GameManager : MonoBehaviour
         }
     }
     
-
     private Vector3 FishSpawnPoint()
     {
         var spawnPos = Vector3.zero;
@@ -108,4 +112,8 @@ public class GameManager : MonoBehaviour
         return spawnPos;
     }
 
+    public void AddScore(Color fishColor, int score = 10, string fishType = "common")
+    {
+        selfScore.SetNewScore(fishColor,score, fishType);
+    }
 }

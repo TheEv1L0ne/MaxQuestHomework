@@ -99,6 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
+  score: 10
+  fishColor: {r: 0, g: 1, b: 0, a: 1}
+  fishType: Common
 --- !u!61 &8123425146445703423
 BoxCollider2D:
   m_ObjectHideFlags: 0
