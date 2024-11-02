@@ -34,6 +34,6 @@ public class Gun : MonoBehaviour
     private void SpawnBullet()
     {
         GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
-        
+        bulletGo.transform.up = transform.up;
     }
 }
