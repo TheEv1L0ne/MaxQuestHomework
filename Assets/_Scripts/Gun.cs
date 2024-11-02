@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Gun : MonoBehaviour
 {
@@ -23,15 +24,31 @@ public class Gun : MonoBehaviour
     {
         LookAtMouse();
 
-        if (Input.GetMouseButtonDown(0))
+        if (!GameManager.Instance.IsAutoOn)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+            
+                if (_canFire)
+                {
+                    _canFire = false;
+                    SpawnBullet();
+                }
+            } 
+        }
+        else
         {
             if (_canFire)
             {
                 _canFire = false;
                 SpawnBullet();
-            }
+            } 
         }
-
+        
         GunCooldown();
     }
 
