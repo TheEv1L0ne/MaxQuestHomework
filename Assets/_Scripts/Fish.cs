@@ -26,6 +26,39 @@ public class Fish : MonoBehaviour
 
     private void InitStartDirection()
     {
-        _moveVector = (Vector3.zero - transform.position).normalized;
+        var pos = this.transform.position;
+        
+        var xMax = GameManager.Instance.Width + 0.5f;
+        var xMin = -xMax;
+
+        var yMax = GameManager.Instance.Height + 0.5f;
+        var yMin = -yMax;
+
+        if (pos.y > GameManager.Instance.Height)
+        {
+            yMax = 0f;
+        }
+
+        if (pos.y < -GameManager.Instance.Height)
+        {
+            yMin = 0f;
+        }
+        
+        if(pos.x > GameManager.Instance.Width)
+        {
+            xMax = 0f;
+        }
+        
+        if(pos.x < -GameManager.Instance.Width)
+        {
+            xMin = 0f;
+        }
+        
+        var x = Random.Range(xMin, xMax);
+        var y = Random.Range(yMin, yMax);
+
+        var directionPoint = new Vector3(x, y, 0f);
+        
+        _moveVector = (directionPoint - transform.position).normalized;
     }
 }
