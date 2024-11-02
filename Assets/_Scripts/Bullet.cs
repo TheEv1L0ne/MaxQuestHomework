@@ -8,6 +8,9 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 4f;
     
     private Vector3 _moveVector = Vector3.zero;
+
+    private int _lastBounceY = 0;
+    private int _lastBounceX = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -35,18 +38,42 @@ public class Bullet : MonoBehaviour
 
         var pos = this.transform.position;
 
-        if (pos.y > ortoSize ||  pos.y < -ortoSize)
+        if (pos.y > ortoSize && _lastBounceY != 1)
         {
-            var moveV = _moveVector;
-            moveV.y = -moveV.y;
-            _moveVector = moveV;
+            _lastBounceY = 1;
+            ChangeY();
+        }
+
+        if (pos.y < -ortoSize && _lastBounceY != -1)
+        {
+            _lastBounceY = -1;
+            ChangeY();
         }
         
-        if(pos.x < -width || pos.x > width)
+        if(pos.x > width && _lastBounceX != 1)
         {
-            var moveV = _moveVector;
-            moveV.x = -moveV.x;
-            _moveVector = moveV;
+            _lastBounceX = 1;
+            ChangeX();
         }
+        
+        if(pos.x < -width && _lastBounceX != -1)
+        {
+            _lastBounceX = -1;
+            ChangeX();
+        }
+    }
+
+    private void ChangeY()
+    {
+        var moveV = _moveVector;
+        moveV.y = -moveV.y;
+        _moveVector = moveV;
+    }
+
+    private void ChangeX()
+    {
+        var moveV = _moveVector;
+        moveV.x = -moveV.x;
+        _moveVector = moveV;
     }
 }
