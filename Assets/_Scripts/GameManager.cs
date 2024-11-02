@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Fish epicFish;
 
     [SerializeField] private SelfScore selfScore;
+    [SerializeField] private TMP_Text totalScore;
 
     private void Awake()
     {
@@ -112,8 +114,10 @@ public class GameManager : MonoBehaviour
         return spawnPos;
     }
 
-    public void AddScore(Color fishColor, int score = 10, string fishType = "common")
+    public void AddScore(Color fishColor, int score = 0, string fishType = "")
     {
+        playerScore += score;
+        totalScore.text = $"Total Score: {playerScore}";
         selfScore.SetNewScore(fishColor,score, fishType);
     }
 }
