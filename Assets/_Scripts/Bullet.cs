@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
 
-    private float speed = 4f;
+    [SerializeField] private float speed = 4f;
     
     // Start is called before the first frame update
     void Start()
@@ -15,6 +15,11 @@ public class Bullet : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        MoveBullet();
+    }
+
+    private void MoveBullet()
     {
         transform.position += transform.up.normalized * Time.deltaTime * speed;
     }
