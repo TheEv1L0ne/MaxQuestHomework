@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Fish : MonoBehaviour
 {
@@ -60,5 +62,13 @@ public class Fish : MonoBehaviour
         var directionPoint = new Vector3(x, y, 0f);
         
         _moveVector = (directionPoint - transform.position).normalized;
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Bullet"))
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

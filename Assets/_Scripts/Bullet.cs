@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,5 +72,13 @@ public class Bullet : MonoBehaviour
         var moveV = _moveVector;
         moveV.x = -moveV.x;
         _moveVector = moveV;
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Fish"))
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
