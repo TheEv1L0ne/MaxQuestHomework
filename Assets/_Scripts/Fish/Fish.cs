@@ -13,6 +13,8 @@ public class Fish : MonoBehaviour
     [SerializeField] protected string fishType = "";
     
     private Vector3 _moveVector = Vector3.zero;
+
+    private bool _firstTimeEnetered = false;
     
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,8 @@ public class Fish : MonoBehaviour
     void Update()
     {
         MoveFish();
+        FirstTimeEntered();
+        DestroyIfRunOut();
     }
     
     private void MoveFish()
@@ -67,6 +71,36 @@ public class Fish : MonoBehaviour
         var directionPoint = new Vector3(x, y, 0f);
         
         _moveVector = (directionPoint - transform.position).normalized;
+    }
+    
+    private void DestroyIfRunOut()
+    {
+        if(!_firstTimeEnetered)
+            return;
+
+        if (IsInside())
+            return;
+        
+        GameManager.Instance.AddScore(Color.white, 0, "");
+        Destroy(this.gameObject);
+    }
+
+    private void FirstTimeEntered()
+    {
+        if (_firstTimeEnetered)
+            return;
+        
+        if (IsInside())
+        {
+            _firstTimeEnetered = true;
+        }
+    }
+
+    private bool IsInside()
+    {
+        var pos = this.transform.position;
+        return pos.x < GameManager.Instance.Width & pos.x > -GameManager.Instance.Width
+               && pos.y < GameManager.Instance.Height && pos.y > -GameManager.Instance.Height;
     }
     
     private void OnTriggerEnter2D(Collider2D other)

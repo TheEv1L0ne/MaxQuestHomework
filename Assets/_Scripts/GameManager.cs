@@ -48,17 +48,11 @@ public class GameManager : MonoBehaviour
         playerScore = 0;
         StartCoroutine(SpawnFish());
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnFish();
-        }
-    }
-
+    
     private IEnumerator SpawnFish()
     {
+        yield return new WaitForSeconds(3f);
+        
         while (true)
         {
             yield return new WaitForSeconds(0.5f);
