@@ -32,31 +32,27 @@ public class Bullet : MonoBehaviour
 
     private void CheckForBounce()
     {
-        float ortoSize = Camera.main.orthographicSize;
-        
-        float width = 16f / 9f * ortoSize;
-
         var pos = this.transform.position;
 
-        if (pos.y > ortoSize && _lastBounceY != 1)
+        if (pos.y > GameManager.Instance.Height && _lastBounceY != 1)
         {
             _lastBounceY = 1;
             ChangeY();
         }
 
-        if (pos.y < -ortoSize && _lastBounceY != -1)
+        if (pos.y < -GameManager.Instance.Height && _lastBounceY != -1)
         {
             _lastBounceY = -1;
             ChangeY();
         }
         
-        if(pos.x > width && _lastBounceX != 1)
+        if(pos.x > GameManager.Instance.Width && _lastBounceX != 1)
         {
             _lastBounceX = 1;
             ChangeX();
         }
         
-        if(pos.x < -width && _lastBounceX != -1)
+        if(pos.x < -GameManager.Instance.Width && _lastBounceX != -1)
         {
             _lastBounceX = -1;
             ChangeX();
