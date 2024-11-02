@@ -11,6 +11,7 @@ public class Fish : MonoBehaviour
     [SerializeField] protected int score = 10;
     [SerializeField] protected Color fishColor = Color.white;
     [SerializeField] protected string fishType = "";
+    [SerializeField] protected int hp = 5;
     
     private Vector3 _moveVector = Vector3.zero;
 
@@ -136,8 +137,13 @@ public class Fish : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
-            GameManager.Instance.AddScore(fishColor, score, fishType);
-            Destroy(this.gameObject);
+            hp -= 1;
+            
+            if (hp <= 0)
+            {
+                GameManager.Instance.AddScore(fishColor, score, fishType);
+                Destroy(this.gameObject);
+            }
         }
     }
 }
