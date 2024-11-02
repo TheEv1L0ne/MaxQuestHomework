@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     public bool IsAutoOn => autoFireToggle.isOn;
 
     [SerializeField] private GameObject fish;
+    [SerializeField] private Fish commonFish;
+    [SerializeField] private Fish rareFish;
+    [SerializeField] private Fish epicFish;
 
     private void Awake()
     {
@@ -52,7 +55,21 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(0.5f);
-            GameObject fishGo = Instantiate(fish, FishSpawnPoint(), Quaternion.identity);
+            var fishGo = Instantiate(RandomFish(), FishSpawnPoint(), Quaternion.identity);
+        }
+    }
+
+    private Fish RandomFish()
+    {
+        var r = Random.Range(0, 100);
+        switch (r)
+        {
+            case < 10:
+                return epicFish;
+            case >= 10 and < 40:
+                return rareFish;
+            case >= 40:
+                return commonFish;
         }
     }
     
