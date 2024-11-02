@@ -6,11 +6,16 @@ public class Gun : MonoBehaviour
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject bullet;
+
+    private float _bulletsPerSecond = 12f;
+    private float _fireCooldown = 0f;
+    private bool _canFire = true;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        _canFire = true;
+        _fireCooldown = 1f / _bulletsPerSecond;
     }
 
     // Update is called once per frame
@@ -20,8 +25,14 @@ public class Gun : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            SpawnBullet();
+            if (_canFire)
+            {
+                _canFire = false;
+                SpawnBullet();
+            }
         }
+
+        GunCooldown();
     }
 
     private void LookAtMouse()
@@ -36,4 +47,21 @@ public class Gun : MonoBehaviour
         GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
         bulletGo.transform.up = transform.up;
     }
+
+    private void GunCooldown()
+    {
+        if (!_canFire)
+        {
+            if (_fireCooldown > 0)
+            {
+                _fireCooldown -= Time.deltaTime;
+            }
+            else
+            {
+                _canFire = true;
+                _fireCooldown = 1f / _bulletsPerSecond;
+            }
+        }
+    }
+    
 }
