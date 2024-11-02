@@ -14,7 +14,10 @@ public class Fish : MonoBehaviour
     
     private Vector3 _moveVector = Vector3.zero;
 
-    private bool _firstTimeEnetered = false;
+    protected bool firstTimeEnetered = false;
+
+    private float _changeFrequency = 2f;
+    private float _timeLeftBeforeChange = 0f;
     
     // Start is called before the first frame update
     void Start()
@@ -28,6 +31,7 @@ public class Fish : MonoBehaviour
         MoveFish();
         FirstTimeEntered();
         DestroyIfRunOut();
+        ChangeFishDirection();
     }
     
     private void MoveFish()
@@ -35,6 +39,30 @@ public class Fish : MonoBehaviour
         transform.position += _moveVector * Time.deltaTime * speed;
     }
 
+    private void ChangeFishDirection()
+    {
+        if(!firstTimeEnetered)
+            return;
+
+        if (_timeLeftBeforeChange <= 0f)
+        {
+            _timeLeftBeforeChange = _changeFrequency;
+            RandomizeDirection();
+        }
+        else
+        {
+            _timeLeftBeforeChange -= Time.deltaTime;
+        }
+    }
+
+    private void RandomizeDirection()
+    {
+        int x = Random.Range(0, 2);
+        _moveVector = x == 0 
+            ? new Vector3(_moveVector.y, -_moveVector.x, 0f) 
+            : new Vector3(-_moveVector.y, _moveVector.x, 0f);
+    }
+    
     private void InitStartDirection()
     {
         var pos = this.transform.position;
@@ -75,7 +103,7 @@ public class Fish : MonoBehaviour
     
     private void DestroyIfRunOut()
     {
-        if(!_firstTimeEnetered)
+        if(!firstTimeEnetered)
             return;
 
         if (IsInside())
@@ -87,12 +115,13 @@ public class Fish : MonoBehaviour
 
     private void FirstTimeEntered()
     {
-        if (_firstTimeEnetered)
+        if (firstTimeEnetered)
             return;
         
         if (IsInside())
         {
-            _firstTimeEnetered = true;
+            _timeLeftBeforeChange = _changeFrequency;
+            firstTimeEnetered = true;
         }
     }
 
