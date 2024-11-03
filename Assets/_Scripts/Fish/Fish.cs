@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Fish : MonoBehaviour
+public class Fish : NetworkBehaviour
 {
     [SerializeField] protected float speed = 4f;
     [SerializeField] protected int score = 10;

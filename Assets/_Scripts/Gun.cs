@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Gun : MonoBehaviour
+public class Gun : NetworkBehaviour
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject bullet;
@@ -19,9 +20,17 @@ public class Gun : MonoBehaviour
         _fireCooldown = 1f / _bulletsPerSecond;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(!IsOwner || !Application.isFocused)
+            return;
+        
         LookAtMouse();
         
         return;
