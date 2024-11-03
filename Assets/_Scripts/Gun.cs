@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +12,8 @@ public class Gun : NetworkBehaviour
     private float _fireCooldown = 0f;
     private bool _canFire = true;
 
+    private bool _isAutoOn = false;
+
     public override void OnNetworkSpawn()
     {
         if(!IsOwner) return;
@@ -24,8 +23,21 @@ public class Gun : NetworkBehaviour
 
         //TODO: Preset player positions here
         transform.position = new Vector3(Random.Range(-4f, 4f), Random.Range(-4f, 4f), 0f);
+
+        AutofireController.ToggleValueChangedEvent += OnToggle;
     }
-    
+
+    public override void OnNetworkDespawn()
+    {
+        if(!IsOwner) return;
+        AutofireController.ToggleValueChangedEvent -= OnToggle;
+    }
+
+    private void OnToggle(bool obj)
+    {
+        _isAutoOn = obj;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -34,8 +46,8 @@ public class Gun : NetworkBehaviour
         
         LookAtMouse();
         
-        // if (!GameManager.Instance.IsAutoOn)
-        // {
+        if (!_isAutoOn)
+        {
             if (Input.GetMouseButtonDown(0))
             {
                 if (EventSystem.current.IsPointerOverGameObject())
@@ -49,15 +61,15 @@ public class Gun : NetworkBehaviour
                     SpawnBullet();
                 }
             } 
-        // }
-        // else
-        // {
-        //     if (_canFire)
-        //     {
-        //         _canFire = false;
-        //         SpawnBullet();
-        //     } 
-        // }
+        }
+        else
+        {
+            if (_canFire)
+            {
+                _canFire = false;
+                SpawnBullet();
+            } 
+        }
         
         GunCooldown();
     }
