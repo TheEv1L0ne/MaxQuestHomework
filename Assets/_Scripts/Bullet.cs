@@ -4,20 +4,26 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
-
     [SerializeField] private float speed = 4f;
     
     private Vector3 _moveVector = Vector3.zero;
 
     private int _lastBounceY = 0;
     private int _lastBounceX = 0;
-    
+
+    public Gun parent;
+
+    private float _screenHeight;
+    private float _screenWidth;
+
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         _moveVector = transform.up.normalized;
+        _screenHeight = Camera.main.orthographicSize;
+        _screenWidth = 16f / 9f * _screenHeight;
     }
 
     // Update is called once per frame
@@ -36,25 +42,25 @@ public class Bullet : MonoBehaviour
     {
         var pos = this.transform.position;
 
-        if (pos.y > GameManager.Instance.Height && _lastBounceY != 1)
+        if (pos.y > _screenHeight && _lastBounceY != 1)
         {
             _lastBounceY = 1;
             ChangeY();
         }
 
-        if (pos.y < -GameManager.Instance.Height && _lastBounceY != -1)
+        if (pos.y < -_screenHeight && _lastBounceY != -1)
         {
             _lastBounceY = -1;
             ChangeY();
         }
         
-        if(pos.x > GameManager.Instance.Width && _lastBounceX != 1)
+        if(pos.x > _screenWidth && _lastBounceX != 1)
         {
             _lastBounceX = 1;
             ChangeX();
         }
         
-        if(pos.x < -GameManager.Instance.Width && _lastBounceX != -1)
+        if(pos.x < -_screenWidth && _lastBounceX != -1)
         {
             _lastBounceX = -1;
             ChangeX();
@@ -77,9 +83,18 @@ public class Bullet : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(!IsOwner) return;
+        
         if (other.CompareTag("Fish"))
         {
-            Destroy(this.gameObject);
+            // parent.DestroyServerRpc(this.gameObject);
+            DestroyServerRpc();
         }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc()
+    {
+        GetComponent<NetworkObject>().Despawn();
     }
 }

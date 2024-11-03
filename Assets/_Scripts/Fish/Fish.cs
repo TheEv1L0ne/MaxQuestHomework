@@ -21,15 +21,22 @@ public class Fish : NetworkBehaviour
     private float _changeFrequency = 2f;
     private float _timeLeftBeforeChange = 0f;
     
-    // Start is called before the first frame update
-    void Start()
+    private float _screenHeight;
+    private float _screenWidth;
+    
+    public override void OnNetworkSpawn()
     {
+        _screenHeight = Camera.main.orthographicSize;
+        _screenWidth = 16f / 9f * _screenHeight;
         InitStartDirection();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!IsServer)
+            return;
+        
         MoveFish();
         FirstTimeEntered();
         DestroyIfRunOut();
@@ -69,28 +76,28 @@ public class Fish : NetworkBehaviour
     {
         var pos = this.transform.position;
         
-        var xMax = GameManager.Instance.Width + 0.5f;
+        var xMax = _screenWidth + 0.5f;
         var xMin = -xMax;
 
-        var yMax = GameManager.Instance.Height + 0.5f;
+        var yMax = _screenHeight + 0.5f;
         var yMin = -yMax;
 
-        if (pos.y > GameManager.Instance.Height)
+        if (pos.y > _screenHeight)
         {
             yMax = 0f;
         }
 
-        if (pos.y < -GameManager.Instance.Height)
+        if (pos.y < -_screenHeight)
         {
             yMin = 0f;
         }
         
-        if(pos.x > GameManager.Instance.Width)
+        if(pos.x > _screenWidth)
         {
             xMax = 0f;
         }
         
-        if(pos.x < -GameManager.Instance.Width)
+        if(pos.x < -_screenWidth)
         {
             xMin = 0f;
         }
@@ -111,8 +118,13 @@ public class Fish : NetworkBehaviour
         if (IsInside())
             return;
         
-        GameManager.Instance.AddScore(Color.white, 0, "");
-        Destroy(this.gameObject);
+        //GameManager.Instance.AddScore(Color.white, 0, "");
+
+        if (IsServer)
+        {
+            NetworkObject networkObject = GetComponent<NetworkObject>();
+            networkObject.Despawn();
+        }
     }
 
     private void FirstTimeEntered()
@@ -130,8 +142,8 @@ public class Fish : NetworkBehaviour
     private bool IsInside()
     {
         var pos = this.transform.position;
-        return pos.x < GameManager.Instance.Width & pos.x > -GameManager.Instance.Width
-               && pos.y < GameManager.Instance.Height && pos.y > -GameManager.Instance.Height;
+        return pos.x < _screenWidth & pos.x > -_screenWidth
+               && pos.y < _screenHeight && pos.y > -_screenHeight;
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -142,9 +154,19 @@ public class Fish : NetworkBehaviour
             
             if (hp <= 0)
             {
-                GameManager.Instance.AddScore(fishColor, score, fishType);
-                Destroy(this.gameObject);
+                //GameManager.Instance.AddScore(fishColor, score, fishType);
+                // Destroy(this.gameObject);
+                // NetworkObject networkObject = GetComponent<NetworkObject>();
+                DestroyObjectServerRpc();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyObjectServerRpc()
+    {
+        if(!IsSpawned) return;
+        
+        NetworkObject.Despawn(true);
     }
 }
