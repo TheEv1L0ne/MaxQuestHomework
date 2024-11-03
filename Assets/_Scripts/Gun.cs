@@ -23,6 +23,8 @@ public class Gun : MonoBehaviour
     void Update()
     {
         LookAtMouse();
+        
+        return;
 
         if (!GameManager.Instance.IsAutoOn)
         {
