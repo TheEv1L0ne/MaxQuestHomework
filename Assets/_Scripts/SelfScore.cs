@@ -1,14 +1,37 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SelfScore : MonoBehaviour
 {
     [SerializeField] private Transform scoreRoot;
+
+    [SerializeField] private TextMeshProUGUI totalScore;
+
+    private int myScore = 0;
     // Start is called before the first frame update
     void Start()
     {
         HideAllScores();
+    }
+
+    private void OnEnable()
+    {
+        Gun.AddKilledFishEvent += AddNewScore;
+        Fish.FishKilledEvent += Fishyfihs;
+    }
+
+    private void Fishyfihs(Fish.FishStats obj)
+    {
+        AddNewScore(obj);
+    }
+
+    private void OnDisable()
+    {
+        Gun.AddKilledFishEvent -= AddNewScore;
     }
 
     private void HideAllScores()
@@ -18,8 +41,13 @@ public class SelfScore : MonoBehaviour
             scoreItem.gameObject.SetActive(false);
         }
     }
+    
+    private void AddNewScore(Fish.FishStats obj)
+    {
+        SetNewScore(obj.fishColor, obj.score, obj.fishType);
+    }
 
-    public void SetNewScore(Color fishColor, int score = 0, string fishType = "")
+    private void SetNewScore(Color fishColor, int score = 0, string fishType = "")
     {
         Debug.Log(fishType);
         
@@ -37,6 +65,9 @@ public class SelfScore : MonoBehaviour
         {
             scoreItem = item.GetComponent<SelfScoreItem>();
         }
+
+        myScore += score;
+        totalScore.text = $"Score: {myScore}";
         
         scoreItem.SetData($"{fishType}: {score}", fishColor);
 

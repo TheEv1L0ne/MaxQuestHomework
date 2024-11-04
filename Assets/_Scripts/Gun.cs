@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,17 +15,48 @@ public class Gun : NetworkBehaviour
 
     private bool _isAutoOn = false;
 
+    public static Action<Fish.FishStats> AddKilledFishEvent = null;
+
+    public NetworkVariable<int> nekiInt = new NetworkVariable<int>();
+    
+
+    public string Id = "";
+    
     public override void OnNetworkSpawn()
     {
-        if(!IsOwner) return;
+        Id = NetworkObjectId.ToString();
         
         _canFire = true;
         _fireCooldown = 1f / _bulletsPerSecond;
+        
+        if(!IsOwner) return;
 
-        //TODO: Preset player positions here
-        transform.position = new Vector3(Random.Range(-4f, 4f), Random.Range(-4f, 4f), 0f);
+        var pos = new Vector3();
+        
+        if (OwnerClientId % 4 == 0)
+        {
+            transform.position = new Vector3(-3f, -5f, 0f);
+        }
+        if (OwnerClientId % 4 == 1)
+        {
+            transform.position = new Vector3(3f, -5f, 0f);
+        }
+        if (OwnerClientId % 4 == 2)
+        {
+            transform.position = new Vector3(-3f, 5f, 0f);
+        }
+        if (OwnerClientId % 4 == 3)
+        {
+            transform.position = new Vector3(3f, 5f, 0f);
+        }
+        
+        
 
         AutofireController.ToggleValueChangedEvent += OnToggle;
+        // Fish.FishKilledEvent += stats =>
+        // {
+        //     Debug.Log($"Got Id: {stats.clientId}");
+        // };
     }
 
     public override void OnNetworkDespawn()
@@ -92,6 +124,7 @@ public class Gun : NetworkBehaviour
         GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
         bulletGo.transform.up = transform.up;
         bulletGo.GetComponent<Bullet>().parent = this;
+        bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
         NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
         networkObject.Spawn(true);
     }
@@ -111,5 +144,10 @@ public class Gun : NetworkBehaviour
             }
         }
     }
-    
+
+    public void AddStats(Fish.FishStats stats)
+    {
+        Debug.Log($"Event by: {Id}");
+        AddKilledFishEvent?.Invoke(stats);
+    }
 }

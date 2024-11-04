@@ -14,6 +14,7 @@ public class Bullet : NetworkBehaviour
     private int _lastBounceX = 0;
 
     public Gun parent;
+    public string someID;
 
     private float _screenHeight;
     private float _screenWidth;
@@ -84,6 +85,8 @@ public class Bullet : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(!IsOwner) return;
+        
+        if(!IsSpawned) return;
         
         if (other.CompareTag("Fish"))
         {

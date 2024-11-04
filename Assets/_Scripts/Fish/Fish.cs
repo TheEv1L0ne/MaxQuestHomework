@@ -23,6 +23,8 @@ public class Fish : NetworkBehaviour
     
     private float _screenHeight;
     private float _screenWidth;
+
+    public static Action<FishStats> FishKilledEvent = null;
     
     public override void OnNetworkSpawn()
     {
@@ -30,7 +32,7 @@ public class Fish : NetworkBehaviour
         _screenWidth = 16f / 9f * _screenHeight;
         InitStartDirection();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -148,25 +150,74 @@ public class Fish : NetworkBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(!IsOwner) return;
+        
         if (other.CompareTag("Bullet"))
         {
-            hp -= 1;
+            Bullet bullet = other.GetComponent<Bullet>();
             
+            hp -= 1;
             if (hp <= 0)
             {
-                //GameManager.Instance.AddScore(fishColor, score, fishType);
-                // Destroy(this.gameObject);
-                // NetworkObject networkObject = GetComponent<NetworkObject>();
+                FishKilledEvent?.Invoke(new FishStats
+                {
+                    fishColor = fishColor,
+                    score = score,
+                    fishType = fishType
+                });
+
+                SendKilledServerRpc(bullet.parent.NetworkObjectId);
                 DestroyObjectServerRpc();
+                
             }
         }
     }
+    
+    [ServerRpc]
+    private void SendKilledServerRpc(ulong parentId)
+    {;
+        List<ulong> _ids = new List<ulong>();
+        
+        foreach (var connectedClient in NetworkManager.Singleton.ConnectedClients)
+        {
+            _ids.Add(connectedClient.Value.PlayerObject.NetworkObjectId);
+        }
+        
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = _ids
+            },
+        };
+            
+        KilledFishClientRpc(clientRpcParams);
+    }
 
+    [ClientRpc]
+    private void KilledFishClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        FishKilledEvent?.Invoke(new FishStats
+        {
+            fishColor = fishColor,
+            score = score,
+            fishType = fishType
+        });
+    }
+    
     [ServerRpc(RequireOwnership = false)]
     private void DestroyObjectServerRpc()
     {
         if(!IsSpawned) return;
         
         NetworkObject.Despawn(true);
+    }
+    
+    public struct FishStats
+    {
+        public Color fishColor;
+        public int score;
+        public string fishType;
+
     }
 }
