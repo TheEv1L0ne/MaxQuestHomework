@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 
-public class Bullet : NetworkBehaviour
+public class PlayerBullet : MonoBehaviour
 {
-    [SerializeField] private float speed = 4f;
+    private float speed = 12f;
     
     private Vector3 _moveVector = Vector3.zero;
 
@@ -17,15 +15,7 @@ public class Bullet : NetworkBehaviour
 
     private float _screenHeight;
     private float _screenWidth;
-
-    // Start is called before the first frame update
-    public override void OnNetworkSpawn()
-    {
-        _moveVector = transform.up.normalized;
-        _screenHeight = Camera.main.orthographicSize;
-        _screenWidth = 16f / 9f * _screenHeight;
-    }
-
+    
     public void Init(Vector3 direction)
     {
         transform.up = direction;
@@ -33,8 +23,7 @@ public class Bullet : NetworkBehaviour
         _screenHeight = Camera.main.orthographicSize;
         _screenWidth = 16f / 9f * _screenHeight;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         MoveBullet();
@@ -93,16 +82,7 @@ public class Bullet : NetworkBehaviour
     {
         if (other.CompareTag("Fish"))
         {
-            // parent.DestroyServerRpc(this.gameObject);
-            // DestroyServerRpc();
-            
             Destroy(this.gameObject);
         }
-    }
-    
-    [ServerRpc(RequireOwnership = false)]
-    public void DestroyServerRpc()
-    {
-        GetComponent<NetworkObject>().Despawn();
     }
 }

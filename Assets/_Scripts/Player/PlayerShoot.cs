@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class PlayerShoot : NetworkBehaviour
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private GameObject bullet;
+    [SerializeField] private PlayerBullet playerBullet;
 
     private const int BulletsPerSecond = 12;
     private bool CanFire => (_lastFired + 1f/BulletsPerSecond) <= Time.time;
@@ -18,15 +21,17 @@ public class PlayerShoot : NetworkBehaviour
     
     public override void OnNetworkSpawn()
     {
-        
         if(!IsOwner)
-            Destroy(this);
+            return;
         
         AutofireController.ToggleValueChangedEvent += OnToggle;
     }
     
     public override void OnNetworkDespawn()
     {
+        if(!IsOwner)
+            return;
+        
         AutofireController.ToggleValueChangedEvent -= OnToggle;
     }
     
@@ -38,6 +43,9 @@ public class PlayerShoot : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!IsOwner)
+            return;
+        
         if (!_isAutoOn)
         {
             if (Input.GetMouseButtonDown(0))
@@ -66,7 +74,12 @@ public class PlayerShoot : NetworkBehaviour
     
     private void SpawnBullet()
     {
-        SpawnBulletServerRpc();
+        // SpawnBulletServerRpc();
+        
+        var direction = transform.up;
+        RequestFireServerRpc(direction);
+        
+        ExecuteSHoot(direction);
     }
     
     [ServerRpc]
@@ -77,5 +90,24 @@ public class PlayerShoot : NetworkBehaviour
         bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
         NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
         networkObject.Spawn(true);
+    }
+
+    [ServerRpc]
+    private void RequestFireServerRpc(Vector3 direction)
+    {
+        FireClientRpc(direction);
+    }
+
+    [ClientRpc]
+    private void FireClientRpc(Vector3 direction)
+    {
+        if(!IsOwner)
+            ExecuteSHoot(direction);
+    }
+
+    private void ExecuteSHoot(Vector3 direction)
+    {
+        var bullet = Instantiate(playerBullet, bulletSpawnPoint.position, quaternion.identity);
+        bullet.Init(direction);
     }
 }

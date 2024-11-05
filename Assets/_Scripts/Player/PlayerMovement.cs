@@ -3,15 +3,12 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    public override void OnNetworkSpawn()
-    {
-        if(!IsOwner)
-            Destroy(this);
-    }
-
     // Update is called once per frame
     void Update()
     {
+        if(!IsOwner)
+            return;
+        
         LookAtMouse();
     }
     

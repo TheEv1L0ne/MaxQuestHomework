@@ -20,7 +20,6 @@ public class SelfScore : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.AddKilledFishEvent += AddNewScore;
         Fish.FishKilledEvent += Fishyfihs;
     }
 
@@ -31,7 +30,6 @@ public class SelfScore : MonoBehaviour
 
     private void OnDisable()
     {
-        Player.AddKilledFishEvent -= AddNewScore;
     }
 
     private void HideAllScores()
