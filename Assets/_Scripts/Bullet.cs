@@ -12,8 +12,7 @@ public class Bullet : NetworkBehaviour
 
     private int _lastBounceY = 0;
     private int _lastBounceX = 0;
-
-    public Gun parent;
+    
     public string someID;
 
     private float _screenHeight;

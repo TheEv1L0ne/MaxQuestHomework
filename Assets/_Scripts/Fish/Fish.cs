@@ -166,7 +166,7 @@ public class Fish : NetworkBehaviour
                     fishType = fishType
                 });
 
-                SendKilledServerRpc(bullet.parent.NetworkObjectId);
+                SendKilledServerRpc();
                 DestroyObjectServerRpc();
                 
             }
@@ -174,7 +174,7 @@ public class Fish : NetworkBehaviour
     }
     
     [ServerRpc]
-    private void SendKilledServerRpc(ulong parentId)
+    private void SendKilledServerRpc()
     {;
         List<ulong> _ids = new List<ulong>();
         

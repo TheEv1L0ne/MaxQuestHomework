@@ -42,9 +42,11 @@ GameObject:
   - component: {fileID: 659982697907686223}
   - component: {fileID: -6608022590191011149}
   - component: {fileID: 2253377955292096679}
+  - component: {fileID: -3016964021888173027}
   - component: {fileID: 2141019704763608418}
+  - component: {fileID: 7641023548338962423}
   m_Layer: 0
-  m_Name: Gun
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +62,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -5, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1460895888910451629}
@@ -79,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 654066684
+  GlobalObjectIdHash: 322930663
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -102,6 +104,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletSpawnPoint: {fileID: 5180783011999254787}
   bullet: {fileID: 689541614306452928, guid: 78bf68e769a5721428088fc1db2f0ef3, type: 3}
+  Id: 
+--- !u!114 &-3016964021888173027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6044616284800524850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a12d7f2f4bb3eb4c8e9385189e23fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2141019704763608418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +148,20 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &7641023548338962423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6044616284800524850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efaaa753e8c741e43a4fdb8d38220664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletSpawnPoint: {fileID: 5180783011999254787}
+  bullet: {fileID: 689541614306452928, guid: 78bf68e769a5721428088fc1db2f0ef3, type: 3}
 --- !u!1 &8490371364495707459
 GameObject:
   m_ObjectHideFlags: 0
