@@ -10,19 +10,17 @@ public class PlayerShoot : NetworkBehaviour
     [SerializeField] private GameObject bullet;
 
     private const int BulletsPerSecond = 12;
-    
-    private float _fireCooldown = 0f;
-    private bool _canFire = true;
+    private bool CanFire => (_lastFired + 1f/BulletsPerSecond) <= Time.time;
 
     private bool _isAutoOn = false;
+
+    private float _lastFired = float.MinValue;
     
     public override void OnNetworkSpawn()
     {
+        
         if(!IsOwner)
             Destroy(this);
-        
-        _canFire = true;
-        _fireCooldown = 1f / BulletsPerSecond;
         
         AutofireController.ToggleValueChangedEvent += OnToggle;
     }
@@ -49,23 +47,21 @@ public class PlayerShoot : NetworkBehaviour
                     return;
                 }
             
-                if (_canFire)
-                {
-                    _canFire = false;
-                    SpawnBullet();
-                }
+                FireBullet();
             } 
         }
         else
         {
-            if (_canFire)
-            {
-                _canFire = false;
-                SpawnBullet();
-            } 
+            FireBullet();
         }
+    }
+
+    private void FireBullet()
+    {
+        if (!CanFire) return;
         
-        GunCooldown();
+        _lastFired = Time.time;
+        SpawnBullet();
     }
     
     private void SpawnBullet()
@@ -81,20 +77,5 @@ public class PlayerShoot : NetworkBehaviour
         bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
         NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
         networkObject.Spawn(true);
-    }
-    
-    private void GunCooldown()
-    {
-        if (_canFire) return;
-        
-        if (_fireCooldown > 0)
-        {
-            _fireCooldown -= Time.deltaTime;
-        }
-        else
-        {
-            _canFire = true;
-            _fireCooldown = 1f / BulletsPerSecond;
-        }
     }
 }
