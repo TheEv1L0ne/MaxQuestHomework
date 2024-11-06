@@ -25,6 +25,7 @@ public class SelfScore : MonoBehaviour
 
     private void Fishyfihs(Fish.FishStats obj)
     {
+        Debug.Log($"Fishy killed by ownerID: {obj.killerId}");
         AddNewScore(obj);
     }
 

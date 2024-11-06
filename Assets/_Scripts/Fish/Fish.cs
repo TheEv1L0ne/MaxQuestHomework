@@ -154,54 +154,33 @@ public class Fish : NetworkBehaviour
         
         if (other.CompareTag("Bullet"))
         {
-            Bullet bullet = other.GetComponent<Bullet>();
+            PlayerBullet bullet = other.GetComponent<PlayerBullet>();
+            var ownerId = bullet.OwnerId;
             
             hp -= 1;
             if (hp <= 0)
             {
-                FishKilledEvent?.Invoke(new FishStats
-                {
-                    fishColor = fishColor,
-                    score = score,
-                    fishType = fishType
-                });
-
-                SendKilledServerRpc();
+                SendKilledServerRpc(ownerId);
                 DestroyObjectServerRpc();
-                
             }
         }
     }
     
     [ServerRpc]
-    private void SendKilledServerRpc()
+    private void SendKilledServerRpc(ulong ownerId)
     {;
-        List<ulong> _ids = new List<ulong>();
-        
-        foreach (var connectedClient in NetworkManager.Singleton.ConnectedClients)
-        {
-            _ids.Add(connectedClient.Value.PlayerObject.NetworkObjectId);
-        }
-        
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = _ids
-            },
-        };
-            
-        KilledFishClientRpc(clientRpcParams);
+        KilledFishClientRpc(ownerId);
     }
 
     [ClientRpc]
-    private void KilledFishClientRpc(ClientRpcParams clientRpcParams = default)
+    private void KilledFishClientRpc(ulong ownerId)
     {
         FishKilledEvent?.Invoke(new FishStats
         {
             fishColor = fishColor,
             score = score,
-            fishType = fishType
+            fishType = fishType,
+            killerId = ownerId
         });
     }
     
@@ -218,5 +197,6 @@ public class Fish : NetworkBehaviour
         public Color fishColor;
         public int score;
         public string fishType;
+        public ulong killerId;
     }
 }
