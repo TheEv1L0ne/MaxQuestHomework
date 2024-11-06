@@ -9,8 +9,6 @@ using UnityEngine.Serialization;
 public class PlayerShoot : NetworkBehaviour
 {
     [SerializeField] private Transform bulletSpawnPoint;
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private PlayerBullet playerBullet;
 
     private const int BulletsPerSecond = 12;
     private bool CanFire => (_lastFired + 1f/BulletsPerSecond) <= Time.time;
@@ -77,37 +75,37 @@ public class PlayerShoot : NetworkBehaviour
         // SpawnBulletServerRpc();
         
         var direction = transform.up;
-        RequestFireServerRpc(direction);
+        RequestFireServerRpc(direction, OwnerClientId);
         
-        ExecuteSHoot(direction);
+        ExecuteSHoot(direction, OwnerClientId);
     }
     
-    [ServerRpc]
-    private void SpawnBulletServerRpc()
-    {
-        GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
-        bulletGo.transform.up = transform.up;
-        bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
-        NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
-        networkObject.Spawn(true);
-    }
+    // [ServerRpc]
+    // private void SpawnBulletServerRpc()
+    // {
+    //     GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
+    //     bulletGo.transform.up = transform.up;
+    //     bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
+    //     NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
+    //     networkObject.Spawn(true);
+    // }
 
     [ServerRpc]
-    private void RequestFireServerRpc(Vector3 direction)
+    private void RequestFireServerRpc(Vector3 direction, ulong id)
     {
-        FireClientRpc(direction);
+        FireClientRpc(direction,id);
     }
 
     [ClientRpc]
-    private void FireClientRpc(Vector3 direction)
+    private void FireClientRpc(Vector3 direction,ulong id)
     {
         if(!IsOwner)
-            ExecuteSHoot(direction);
+            ExecuteSHoot(direction, id);
     }
 
-    private void ExecuteSHoot(Vector3 direction)
+    private void ExecuteSHoot(Vector3 direction, ulong id)
     {
-        var bullet = Instantiate(playerBullet, bulletSpawnPoint.position, quaternion.identity);
-        bullet.Init(direction);
+        var bullet = BulletSpawner.Instance.GetBulletFromPool();
+        bullet.Init(bulletSpawnPoint.position, direction, id);
     }
 }

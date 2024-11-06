@@ -5,23 +5,25 @@ using UnityEngine;
 public class PlayerBullet : MonoBehaviour
 {
     private float speed = 12f;
+
+    public ulong OwnerId;
     
     private Vector3 _moveVector = Vector3.zero;
 
     private int _lastBounceY = 0;
     private int _lastBounceX = 0;
     
-    public string someID;
-
     private float _screenHeight;
     private float _screenWidth;
     
-    public void Init(Vector3 direction)
+    public void Init(Vector3 position, Vector3 direction, ulong id)
     {
+        this.transform.position = position;
         transform.up = direction;
         _moveVector = transform.up.normalized;
         _screenHeight = Camera.main.orthographicSize;
         _screenWidth = 16f / 9f * _screenHeight;
+        OwnerId = id;
     }
     
     void Update()
@@ -82,7 +84,13 @@ public class PlayerBullet : MonoBehaviour
     {
         if (other.CompareTag("Fish"))
         {
-            Destroy(this.gameObject);
+            BulletSpawner.Instance.ReturnBulletToPool(this);
         }
     }
+    
+    // public struct Data
+    // {
+    //     public ulong OwnerId;
+    //     public 
+    // }
 }

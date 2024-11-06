@@ -433,6 +433,52 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5020296740482442481, guid: e3ab81895d2a38242bf847b2c9fc7953, type: 3}
   m_PrefabInstance: {fileID: 262976075}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &352340553
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 352340554}
+  - component: {fileID: 352340555}
+  m_Layer: 0
+  m_Name: BulletSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &352340554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352340553}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352340555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352340553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d90504b36d9ae14687072734c618265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletRoot: {fileID: 352340554}
+  playerBullet: {fileID: -4965535744738611523, guid: 0b836ef83f5707c4a86237785f96ae49, type: 3}
 --- !u!1 &366609117
 GameObject:
   m_ObjectHideFlags: 0
@@ -3133,7 +3179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2076059894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3292,3 +3338,4 @@ SceneRoots:
   - {fileID: 1840067318}
   - {fileID: 1213919953}
   - {fileID: 471711633}
+  - {fileID: 352340554}
