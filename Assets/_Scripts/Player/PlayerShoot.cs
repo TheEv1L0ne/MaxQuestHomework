@@ -80,16 +80,6 @@ public class PlayerShoot : NetworkBehaviour
         ExecuteSHoot(direction, OwnerClientId);
     }
     
-    // [ServerRpc]
-    // private void SpawnBulletServerRpc()
-    // {
-    //     GameObject bulletGo = Instantiate(bullet, bulletSpawnPoint.transform.position, Quaternion.identity);
-    //     bulletGo.transform.up = transform.up;
-    //     bulletGo.GetComponent<Bullet>().someID = OwnerClientId.ToString();
-    //     NetworkObject networkObject = bulletGo.GetComponent<NetworkObject>();
-    //     networkObject.Spawn(true);
-    // }
-
     [ServerRpc]
     private void RequestFireServerRpc(Vector3 direction, ulong id)
     {

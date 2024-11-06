@@ -218,6 +218,5 @@ public class Fish : NetworkBehaviour
         public Color fishColor;
         public int score;
         public string fishType;
-
     }
 }

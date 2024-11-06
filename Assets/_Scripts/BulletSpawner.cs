@@ -36,10 +36,10 @@ public class BulletSpawner : MonoBehaviour
 
     private PlayerBullet InstantiateBullet()
     {
-        var playerBullet = Instantiate(this.playerBullet, Vector3.zero, Quaternion.identity);
-        playerBullet.gameObject.SetActive(false);
-        playerBullet.transform.parent = bulletRoot;
-        return playerBullet;
+        var bullet = Instantiate(this.playerBullet, Vector3.zero, Quaternion.identity);
+        bullet.gameObject.SetActive(false);
+        bullet.transform.parent = bulletRoot;
+        return bullet;
     }
 
     public PlayerBullet GetBulletFromPool()
