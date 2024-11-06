@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 2141019704763608418}
   - component: {fileID: -3016964021888173027}
   - component: {fileID: 7641023548338962423}
+  - component: {fileID: 528617559649122324}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -158,8 +159,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpawnPoint: {fileID: 5180783011999254787}
-  bullet: {fileID: 689541614306452928, guid: 78bf68e769a5721428088fc1db2f0ef3, type: 3}
-  playerBullet: {fileID: -4965535744738611523, guid: 0b836ef83f5707c4a86237785f96ae49, type: 3}
+--- !u!114 &528617559649122324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6044616284800524850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a97026e7cfa0b54a894f2f849cff89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 5454133550964356593}
 --- !u!1 &8490371364495707459
 GameObject:
   m_ObjectHideFlags: 0
