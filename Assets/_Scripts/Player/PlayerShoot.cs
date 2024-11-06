@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -95,7 +96,18 @@ public class PlayerShoot : NetworkBehaviour
 
     private void ExecuteSHoot(Vector3 direction, ulong id)
     {
+        //This should be sent via server to anyone!!!
+        var guid = Guid.NewGuid();
         var bullet = BulletSpawner.Instance.GetBulletFromPool();
-        bullet.Init(bulletSpawnPoint.position, direction, id);
+
+        var data = new PlayerBullet.Data
+        {
+            OwnerId = id,
+            Id = guid,
+            StartPos = bulletSpawnPoint.position,
+            Direction = direction
+        };
+
+        bullet.Init(data);
     }
 }
