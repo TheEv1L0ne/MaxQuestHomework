@@ -87,7 +87,7 @@ public class PlayerBullet : MonoBehaviour
     {
         if (!other.CompareTag("Fish")) return;
         
-        BulletSpawner.Instance.ReturnBulletToPool(bulletId, OwnerId);
+        // BulletSpawner.Instance.ReturnBulletToPool(bulletId, OwnerId);
     }
     
     public struct Data

@@ -155,12 +155,12 @@ public class Fish : NetworkBehaviour
         if (other.CompareTag("Bullet"))
         {
             PlayerBullet bullet = other.GetComponent<PlayerBullet>();
-            var ownerId = bullet.OwnerId;
+            DestroyedBulletServerRpc(bullet.bulletId, bullet.OwnerId);
             
             hp -= 1;
             if (hp <= 0)
             {
-                SendKilledServerRpc(ownerId);
+                SendKilledServerRpc(bullet.OwnerId);
                 DestroyObjectServerRpc();
             }
         }
@@ -182,6 +182,19 @@ public class Fish : NetworkBehaviour
             fishType = fishType,
             killerId = ownerId
         });
+    }
+
+    [ServerRpc]
+    private void DestroyedBulletServerRpc(string bulletId, ulong ownerId)
+    {
+        DestroyedBulletClientRpc(bulletId, ownerId);
+    }
+    
+    [ClientRpc]
+    private void DestroyedBulletClientRpc(string bulletId, ulong ownerId)
+    {
+        Debug.Log($"Destroying bullet with bulletId: {bulletId} and owner {ownerId}");
+        BulletSpawner.Instance.ReturnBulletToPool(bulletId, ownerId);
     }
     
     [ServerRpc(RequireOwnership = false)]
