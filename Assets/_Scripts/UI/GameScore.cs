@@ -29,6 +29,9 @@ public class GameScore : MonoBehaviour
         Fish.FishKilledEvent -= OnFishKilled;
     }
     
+    //This will not show correct value for players that join late
+    //If we want to make this always show correct scores we need to make this 
+    //to receive scores from server via some function or make scores network variable
     private void OnFishKilled(Fish.FishStats obj)
     {
         var player = obj.killerId;

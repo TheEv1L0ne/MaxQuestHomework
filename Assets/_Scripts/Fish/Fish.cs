@@ -193,7 +193,6 @@ public class Fish : NetworkBehaviour
     [ClientRpc]
     private void DestroyedBulletClientRpc(string bulletId, ulong ownerId)
     {
-        Debug.Log($"Destroying bullet with bulletId: {bulletId} and owner {ownerId}");
         BulletSpawner.Instance.ReturnBulletToPool(bulletId, ownerId);
     }
     
