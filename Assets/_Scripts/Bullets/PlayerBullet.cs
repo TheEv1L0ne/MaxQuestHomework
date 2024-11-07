@@ -14,6 +14,8 @@ public class PlayerBullet : MonoBehaviour
     
     private float _screenHeight;
     private float _screenWidth;
+
+    private SpriteRenderer _spriteRenderer;
     
     public void Init(Data data)
     {
@@ -27,6 +29,9 @@ public class PlayerBullet : MonoBehaviour
         
         _lastBounceY = 0;
         _lastBounceX = 0;
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.color = data.playerColor;
     }
     
     void Update()
@@ -96,5 +101,6 @@ public class PlayerBullet : MonoBehaviour
         public string Id;
         public Vector3 StartPos;
         public Vector3 Direction;
+        public Color playerColor;
     }
 }

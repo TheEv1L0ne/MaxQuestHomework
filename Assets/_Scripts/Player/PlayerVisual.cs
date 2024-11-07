@@ -13,6 +13,8 @@ public class PlayerVisual : NetworkBehaviour
 
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    public Color GetPlayerColor => spriteRenderer.color;
+
     private void Awake()
     {
         _netColor.OnValueChanged += OnValueChanged;

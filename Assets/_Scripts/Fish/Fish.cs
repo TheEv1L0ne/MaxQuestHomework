@@ -150,20 +150,19 @@ public class Fish : NetworkBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(!IsSpawned) return;
         if(!IsOwner) return;
+
+        if (!other.CompareTag("Bullet")) return;
         
-        if (other.CompareTag("Bullet"))
-        {
-            PlayerBullet bullet = other.GetComponent<PlayerBullet>();
-            DestroyedBulletServerRpc(bullet.bulletId, bullet.OwnerId);
+        var bullet = other.GetComponent<PlayerBullet>();
+        DestroyedBulletServerRpc(bullet.bulletId, bullet.OwnerId);
             
-            hp -= 1;
-            if (hp <= 0)
-            {
-                SendKilledServerRpc(bullet.OwnerId);
-                DestroyObjectServerRpc();
-            }
-        }
+        hp -= 1;
+        if (hp > 0) return;
+        
+        SendKilledServerRpc(bullet.OwnerId);
+        DestroyObjectServerRpc();
     }
     
     [ServerRpc]
@@ -187,6 +186,8 @@ public class Fish : NetworkBehaviour
     [ServerRpc]
     private void DestroyedBulletServerRpc(string bulletId, ulong ownerId)
     {
+        if(!IsSpawned) return;
+        
         DestroyedBulletClientRpc(bulletId, ownerId);
     }
     

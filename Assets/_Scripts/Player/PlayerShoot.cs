@@ -100,7 +100,8 @@ public class PlayerShoot : NetworkBehaviour
             OwnerId = id,
             Id = guid,
             StartPos = bulletSpawnPoint.position,
-            Direction = direction
+            Direction = direction,
+            playerColor = this.GetComponent<PlayerVisual>().GetPlayerColor
         };
         
         bullet.Init(data);
