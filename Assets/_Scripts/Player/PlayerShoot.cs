@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 public class PlayerShoot : NetworkBehaviour
 {
@@ -76,30 +72,29 @@ public class PlayerShoot : NetworkBehaviour
         // SpawnBulletServerRpc();
         
         var direction = transform.up;
-        RequestFireServerRpc(direction, OwnerClientId);
+        var guid = Guid.NewGuid().ToString();
+        RequestFireServerRpc(direction,guid, OwnerClientId);
         
-        ExecuteSHoot(direction, OwnerClientId);
+        ExecuteSHoot(direction,guid, OwnerClientId);
     }
     
     [ServerRpc]
-    private void RequestFireServerRpc(Vector3 direction, ulong id)
+    private void RequestFireServerRpc(Vector3 direction,string guid, ulong id)
     {
-        FireClientRpc(direction,id);
+        FireClientRpc(direction,guid, id);
     }
 
     [ClientRpc]
-    private void FireClientRpc(Vector3 direction,ulong id)
+    private void FireClientRpc(Vector3 direction, string guid, ulong id)
     {
         if(!IsOwner)
-            ExecuteSHoot(direction, id);
+            ExecuteSHoot(direction, guid, id);
     }
 
-    private void ExecuteSHoot(Vector3 direction, ulong id)
+    private void ExecuteSHoot(Vector3 direction, string guid, ulong id)
     {
-        //This should be sent via server to anyone!!!
-        var guid = Guid.NewGuid();
         var bullet = BulletSpawner.Instance.GetBulletFromPool();
-
+        
         var data = new PlayerBullet.Data
         {
             OwnerId = id,
@@ -107,7 +102,7 @@ public class PlayerShoot : NetworkBehaviour
             StartPos = bulletSpawnPoint.position,
             Direction = direction
         };
-
+        
         bullet.Init(data);
     }
 }

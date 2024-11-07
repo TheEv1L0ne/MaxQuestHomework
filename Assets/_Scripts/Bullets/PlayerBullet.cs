@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerBullet : MonoBehaviour
@@ -8,7 +5,7 @@ public class PlayerBullet : MonoBehaviour
     private float speed = 12f;
 
     public ulong OwnerId;
-    public Guid bulletId;
+    public string bulletId;
     
     private Vector3 _moveVector = Vector3.zero;
 
@@ -90,13 +87,13 @@ public class PlayerBullet : MonoBehaviour
     {
         if (!other.CompareTag("Fish")) return;
         
-        BulletSpawner.Instance.ReturnBulletToPool(this);
+        BulletSpawner.Instance.ReturnBulletToPool(bulletId, OwnerId);
     }
     
     public struct Data
     {
         public ulong OwnerId;
-        public Guid Id;
+        public string Id;
         public Vector3 StartPos;
         public Vector3 Direction;
     }

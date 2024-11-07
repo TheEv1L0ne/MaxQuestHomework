@@ -1,8 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class BulletSpawner : MonoBehaviour
 {
@@ -65,8 +63,12 @@ public class BulletSpawner : MonoBehaviour
         return bullet;
     }
 
-    public void ReturnBulletToPool(PlayerBullet bullet)
+    public void ReturnBulletToPool(string guid, ulong ownerId)
     {
-        bullet.gameObject.SetActive(false);
+        var bullet = _bulletPool.FirstOrDefault(b => b.OwnerId == ownerId && b.bulletId == guid);
+        if (bullet != null && bullet.gameObject.activeInHierarchy)
+        {
+            bullet.gameObject.SetActive(false);
+        }
     }
 }
