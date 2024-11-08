@@ -52,11 +52,11 @@ public class SelfScore : MonoBehaviour
             scoreItem = item.GetComponent<SelfScoreItem>();
         }
 
-        var fishColor = stats.fishColor;
-        var score = stats.score;
-        var fishType = stats.fishType;
+        var fishColor = stats.FishColor;
+        var score = stats.Score;
+        var fishType = stats.FishType;
 
-        if (stats.killerId != NetworkManager.Singleton.LocalClient.ClientId)
+        if (stats.KillerId != NetworkManager.Singleton.LocalClient.ClientId)
         {
             fishColor = Color.white;
             score = 0;

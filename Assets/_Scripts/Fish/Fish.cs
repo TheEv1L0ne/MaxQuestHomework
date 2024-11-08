@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Fish : NetworkBehaviour
+public abstract class Fish : NetworkBehaviour
 {
     [SerializeField] protected float speed = 4f;
     [SerializeField] protected int score = 10;
@@ -14,12 +14,8 @@ public class Fish : NetworkBehaviour
     [SerializeField] protected string fishType = "";
     [SerializeField] protected int hp = 5;
     
-    private Vector3 _moveVector = Vector3.zero;
-
-    protected bool firstTimeEnetered = false;
-
-    private float _changeFrequency = 2f;
-    private float _timeLeftBeforeChange = 0f;
+    protected Vector3 MoveVector = Vector3.zero;
+    protected bool FirstTimeEntered = false;
     
     private float _screenHeight;
     private float _screenWidth;
@@ -34,44 +30,30 @@ public class Fish : NetworkBehaviour
     }
     
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if(!IsServer)
             return;
         
         MoveFish();
-        FirstTimeEntered();
+        EnteredScreenFirstTime();
         DestroyIfRunOut();
         ChangeFishDirection();
     }
     
     private void MoveFish()
     {
-        transform.position += _moveVector * Time.deltaTime * speed;
+        transform.position += MoveVector * Time.deltaTime * speed;
     }
 
-    private void ChangeFishDirection()
+    protected abstract void ChangeFishDirection();
+    
+    protected virtual void RandomizeDirection()
     {
-        if(!firstTimeEnetered)
-            return;
-
-        if (_timeLeftBeforeChange <= 0f)
-        {
-            _timeLeftBeforeChange = _changeFrequency;
-            RandomizeDirection();
-        }
-        else
-        {
-            _timeLeftBeforeChange -= Time.deltaTime;
-        }
-    }
-
-    private void RandomizeDirection()
-    {
-        int x = Random.Range(0, 2);
-        _moveVector = x == 0 
-            ? new Vector3(_moveVector.y, -_moveVector.x, 0f) 
-            : new Vector3(-_moveVector.y, _moveVector.x, 0f);
+        var x = Random.Range(0, 2);
+        MoveVector = x == 0 
+            ? new Vector3(MoveVector.y, -MoveVector.x, 0f) 
+            : new Vector3(-MoveVector.y, MoveVector.x, 0f);
     }
     
     private void InitStartDirection()
@@ -109,36 +91,25 @@ public class Fish : NetworkBehaviour
 
         var directionPoint = new Vector3(x, y, 0f);
         
-        _moveVector = (directionPoint - transform.position).normalized;
+        MoveVector = (directionPoint - transform.position).normalized;
     }
     
     private void DestroyIfRunOut()
     {
-        if(!firstTimeEnetered)
-            return;
-
-        if (IsInside())
-            return;
+        if(!FirstTimeEntered) return;
+        if (IsInside()) return;
+        if (!IsServer) return;
         
-        //GameManager.Instance.AddScore(Color.white, 0, "");
-
-        if (IsServer)
-        {
-            NetworkObject networkObject = GetComponent<NetworkObject>();
-            networkObject.Despawn();
-        }
+        var networkObject = GetComponent<NetworkObject>();
+        networkObject.Despawn();
     }
 
-    private void FirstTimeEntered()
+    private void EnteredScreenFirstTime()
     {
-        if (firstTimeEnetered)
-            return;
+        if (FirstTimeEntered) return;
+        if (!IsInside()) return;
         
-        if (IsInside())
-        {
-            _timeLeftBeforeChange = _changeFrequency;
-            firstTimeEnetered = true;
-        }
+        FirstTimeEntered = true;
     }
 
     private bool IsInside()
@@ -176,10 +147,10 @@ public class Fish : NetworkBehaviour
     {
         FishKilledEvent?.Invoke(new FishStats
         {
-            fishColor = fishColor,
-            score = score,
-            fishType = fishType,
-            killerId = ownerId
+            FishColor = fishColor,
+            Score = score,
+            FishType = fishType,
+            KillerId = ownerId
         });
     }
 
@@ -207,9 +178,9 @@ public class Fish : NetworkBehaviour
     
     public struct FishStats
     {
-        public Color fishColor;
-        public int score;
-        public string fishType;
-        public ulong killerId;
+        public Color FishColor;
+        public int Score;
+        public string FishType;
+        public ulong KillerId;
     }
 }

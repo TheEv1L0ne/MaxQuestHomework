@@ -34,14 +34,14 @@ public class GameScore : MonoBehaviour
     //to receive scores from server via some function or make scores network variable
     private void OnFishKilled(Fish.FishStats obj)
     {
-        var player = obj.killerId;
+        var player = obj.KillerId;
         if (_scores.ContainsKey(player))
         {
-            _scores[player] += obj.score;
+            _scores[player] += obj.Score;
         }
         else
         {
-            _scores.Add(obj.killerId, obj.score);
+            _scores.Add(obj.KillerId, obj.Score);
         }
 
         var i = 0;
